@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script>
+        L_PREFER_CANVAS = false;
+        L_NO_TOUCH = false;
+        L_DISABLE_3D = false;
+    </script>
+    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0/leaflet.markercluster-src.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0/leaflet.markercluster.js"></script>
+    <script type="text/javascript" src="data"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://rawgit.com/python-visualization/folium/master/folium/templates/leaflet.awesome.rotate.css" />
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+<style>
+    body{
+        font-family: 'Ubuntu', sans-serif;
+        background-color: #3498db;
+    }
+    .heading {
+        text-align: center;
+        font-size: 50px;
+        height: 70px;
+        text-align: left;
+        background-color: #ecf0f1;
+
+    }
+    .username{
+        text-align: right;
+        font-size: 20px;
+        height: 70px;
+        background-color: #ecf0f1;
+        padding-bottom: 0;
+        height: 70px;
+    }
+
+    .left, .right {
+        min-height: 900px;
+        background-color: #3498db;
+    }
+
+    .run, .search {
+        margin: 20px;
+    }
+
+    .search {
+        margin-bottom: 50px;
+    }
+    a:hover {
+        text-decoration:none;
+    }
+    .left {
+        background-color: #3498db;
+    }
+    .right {
+        background-color: #2980b9;
+    }
+    h4 {
+        color:white;
+        font-weight:  bold;
+    }
+    #lat,#lon{
+        width: 125px;
+    }
+    #location {
+        width:170px;
+        height:30px;
+    }
+    #user{
+        color:black;
+    }
+
+
+    div.tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+/* Style the buttons inside the tab */
+    div.tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        width:50%;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+    }
+
+    /* Change background color of buttons on hover */
+    div.tab button:hover {
+        background-color: #ddd;
+    }
+
+    /* Create an active/current tablink class */
+    div.tab button.active {
+        background-color: #ccc;
+    }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border-top: none;
+    }
+    .tabcontent {
+        -webkit-animation: fadeEffect 1s;
+        animation: fadeEffect 1s; /* Fading effect takes 1 second */
+    }
+
+    @-webkit-keyframes fadeEffect {
+        from {opacity: 0;}
+        to {opacity: 1;}
+    }
+
+    @keyframes fadeEffect {
+        from {opacity: 0;}
+        to {opacity: 1;}
+    }
+</style>
+
+
+</head>
+
+<body>
+    <div class="container-fluid">
+    <div class="row" style="border: 1px solid blue;">
+        <div class="col-md-10 heading">
+            <a href="/">EthPhoto: Decentralized Photo Sharing!</a>
+        </div>
+        <div class="col-md-2 username">
+            <h4 id=user>Hey {{username}}!</h4>
+            <a href="/change_username">
+                <h5>Change username</h5>
+            </a>
+        </div>
+    </div>
+
+        <div class="row">
+            <div class="col-md-3 left">
+                <!-- <div class="search">
+                    <h4> Search by Topic:</h4>
+                    <form action="/topic_search" method="get">
+                        <input type="text" name="topic" placeholder="Topic" required><br><br>
+                        <input type="submit" value="Search" class="btn">
+                    </form>
+                </div>
+                <div class="run">
+                        <form action="/upload_image" method="post" enctype="multipart/form-data" autocomplete="off">
+                        <h4>Upload new picture:</h4><input type="file" class="btn" name="upload"><br>
+                        <h4>Topics: </h4><input type="text" name="topics" placeholder="Topics, sep. by commas" required><br><br>
+                        <h4> Get Coortdinates of Location:</h4>
+                        <input type="text" id="location" name="location" placeholder="Location">
+                        <button class="btn">Get Coordinates</button><br><br>
+                        <input type="text" id="lat" name="lat" placeholder="Latitude" required>
+                        <input type="text" id="lon" name="lon" placeholder="Longitude" required><br><br>
+                        <input type="submit" value="Upload" class="btn">
+                    </form>
+                </div> -->
+                <div class="tab">
+                    <button class="tablinks" id="defaultOpen" onclick="openTab(event, 'Search')">Search</button>
+                    <button class="tablinks" onclick="openTab(event, 'Upload')">Upload</button>
+                </div>
+
+                <div id="Search" class="tabcontent">
+                    <h4> Search by Topic:</h4>
+                    <form action="/topic_search" method="get" autocomplete="off">
+                        <input type="text" name="topic" placeholder="Topic" required><br><br>
+                        <input type="submit" value="Search" class="btn">
+                    </form>
+                </div>
+
+                <div id="Upload" class="tabcontent">
+                    <form action="/upload_image" method="post" enctype="multipart/form-data" autocomplete="off">
+                        <h4>1. Add new picture:</h4><input type="file" class="btn" name="upload" accept=".jpeg,.jpg, .png, .gif" required><br>
+                        <h4>2. Add Topics: </h4><input type="text" name="topics" placeholder="Comma separate topics" required><br><br>
+                        <h4>3. Get Coordinates:</h4>
+                        <input type="text" id="location" name="location" placeholder="Enter location" style="margin-bottom:10px"><br>
+                        <button type="button" id="coord" class="btn">Get Coordinates</button><br><br>
+                        <h4>(or enter manually)</h4>
+                        <input type="text" id="lat" name="lat" placeholder="Latitude" style="margin-bottom:10px" required>
+                        <input type="text" id="lon" name="lon" placeholder="Longitude" style="margin-bottom:10px" required><br><br>
+                       <input type="submit" value="Upload" class="btn">
+                    </form>
+                </div>                
+            </div>
+            <div class="col-md-9 right folium-map" id="map_8335862b0d6649fabdcc78f26eb5a43d">
+              
+            </div>
+        </div>
+    </div>
+    
+</body>
+<script>
+    $(document).ready(function() {
+        document.getElementById("defaultOpen").click();
+        $("#coord").click(function() {
+            $.post("/coordinates", {
+                    location: document.getElementById("location").value,
+                },
+                function(data, status) {
+                    data = data.split(",");
+                    lat = data[0];
+                    lon = data[1];
+                    document.getElementById("lat").value = lat;
+                    document.getElementById("lon").value = lon;
+                });
+        });
+    });
+    var southWest = L.latLng(-90, -180);
+    var northEast = L.latLng(90, 180);
+    var bounds = L.latLngBounds(southWest, northEast);
+    var mymap = L.map(
+        'map_8335862b0d6649fabdcc78f26eb5a43d', {
+            center: [45.5236, -122.675],
+            zoom: 2,
+            maxBounds: bounds,
+            layers: [],
+            worldCopyJump: false,
+            crs: L.CRS.EPSG3857
+        });
+    var tile_layer = L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            minZoom: 1,
+            continuousWorld: false,
+            noWrap: false,
+            attribution: 'Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
+            detectRetina: false
+        }).addTo(mymap);
+    for (var i = 0; i < content.length; i++) {
+        var marker = L.marker(content[i]["location"]).addTo(mymap);
+        var html_text = "<div width='250px'><a target='_parent' href='/view_image?hash=" + content[i]["hash"] + "'><img src='https://gateway.ipfs.io/ipfs/" + content[i]["thumbnail"] + "' onerror='Loading'></img></a></div>"
+        // marker.bindPopup("<iframe height='105' width='105' srcdoc=\""+html_text+"\"></iframe>");
+        marker.bindPopup(html_text);
+        
+    }
+    document.getElementById("defaultOpen").click();
+    function openTab(evt, cityName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+
+    }
+    document.getElementById("defaultOpen").click();
+
+</script>
